@@ -2,11 +2,12 @@
 
 hash_map::hash_map(size_t capacity) : _size(0), _capacity(capacity)
 {
-    _head = new hash_list[_capacity];
+    _head = new hash_list[capacity];
 }
 
-hash_map::hash_map(const hash_map &other) : _size(other._size), _capacity(other._capacity), _head(other._head)
+hash_map::hash_map(const hash_map &other) : _size(other._size), _capacity(other._capacity)
 {
+    _head = new hash_list[_capacity];
     for (size_t i = 0; i < _capacity; i++)
     {
         _head[i] = other._head[i];
@@ -39,20 +40,16 @@ hash_map &hash_map::operator=(const hash_map &other)
 
 void hash_map::insert(int key, float value)
 {
-    // DIY absolute value function
-    if (key < 0)
-    {
-        key = -key; // if key >= 0, then we do nothing
-    }
-    size_t ind = key % _capacity; // absolute value of the key modulo _capacity
+    // // DIY absolute value function
+    // if (key < 0)
+    // {
+    //     key = -key; // if key >= 0, then we do nothing
+    // }
+    size_t ind = abs(key) % _capacity; // absolute value of the key modulo _capacity
+    bool exist_tf = _head[ind].get_value(key).has_value();
 
-    if (_head[ind].get_value(key).has_value()) // key already exists
+    if (exist_tf == false)
     {
-        _head[ind].insert(key, value);
-    }
-    else // only update size if key is new
-    {
-        _head[ind].insert(key, value);
         _size++;
     }
 
@@ -61,24 +58,24 @@ void hash_map::insert(int key, float value)
 
 std::optional<float> hash_map::get_value(int key) const
 {
-    // DIY absolute value function
-    if (key < 0)
-    {
-        key = -key; // if key >= 0, then we do nothing
-    }
-    size_t ind = key % _capacity;
+    // // DIY absolute value function
+    // if (key < 0)
+    // {
+    //     key = -key; // if key >= 0, then we do nothing
+    // }
+    size_t ind = abs(key) % _capacity;
 
     return(_head[ind].get_value(key));
 }
 
 bool hash_map::remove(int key)
 {
-    // DIY absolute value function
-    if (key < 0)
-    {
-        key = -key; // if key >= 0, then we do nothing
-    }
-    size_t ind = key % _capacity;
+    // // DIY absolute value function
+    // if (key < 0)
+    // {
+    //     key = -key; // if key >= 0, then we do nothing
+    // }
+    size_t ind = abs(key) % _capacity;
 
     bool remove_tf = _head[ind].remove(key);
 
