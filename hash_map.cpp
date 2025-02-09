@@ -115,5 +115,23 @@ void hash_map::get_all_keys(int *keys)
             _head[i].increment_iter();
         }
     }
+
+    return;
 }
 
+void hash_map::get_bucket_sizes(size_t *buckets)
+{
+    for (size_t i = 0; i < _capacity; i++)
+    {
+        buckets[i] = _head[i].get_size();
+    }
+
+    return;
+}
+
+hash_map::~hash_map()
+{
+    delete[] _head;
+
+    return;
+}
