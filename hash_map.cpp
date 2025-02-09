@@ -5,9 +5,8 @@ hash_map::hash_map(size_t capacity) : _size(0), _capacity(capacity)
     _head = new hash_list[_capacity];
 }
 
-hash_map::hash_map(const hash_map &other) : _size(other._size), _capacity(other._capacity)
+hash_map::hash_map(const hash_map &other) : _size(other._size), _capacity(other._capacity), _head(other._head)
 {
-    _head = new hash_list[_capacity];
     for (size_t i = 0; i < _capacity; i++)
     {
         _head[i] = other._head[i];
