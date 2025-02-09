@@ -46,7 +46,9 @@ void hash_map::insert(int key, float value)
     //     key = -key; // if key >= 0, then we do nothing
     // }
     size_t ind = abs(key) % _capacity; // absolute value of the key modulo _capacity
+
     bool exist_tf = _head[ind].get_value(key).has_value();
+    _head[ind].insert(key, value);
 
     if (exist_tf == false)
     {
