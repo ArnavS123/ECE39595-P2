@@ -36,19 +36,84 @@ hash_map &hash_map::operator=(const hash_map &other)
 
 void hash_map::insert(int key, float value)
 {
-    // absolute value
+    // DIY absolute value function
     if (key < 0)
     {
         key = -key; // if key >= 0, then we do nothing
     }
     size_t ind = key % _capacity; // absolute value of the key modulo _capacity
 
-    size_t initial_size = _head[ind].get_size(); // calling hash_list function get_size
-
-    _head[ind].insert(key, value); // calling hash_list function insert
-
-    if (_head[ind].get_size() > initial_size) // insertion successful
+    if (_head[ind].get_value(key).has_value()) // key already exists
     {
+        _head[ind].insert(key, value);
+    }
+    else // only update size if key is new
+    {
+        _head[ind].insert(key, value);
         _size++;
     }
+
+    return;
 }
+
+std::optional<float> hash_map::get_value(int key) const
+{
+    // DIY absolute value function
+    if (key < 0)
+    {
+        key = -key; // if key >= 0, then we do nothing
+    }
+    size_t ind = key % _capacity;
+
+    return(_head[ind].get_value(key));
+}
+
+bool hash_map::remove(int key)
+{
+    // DIY absolute value function
+    if (key < 0)
+    {
+        key = -key; // if key >= 0, then we do nothing
+    }
+    size_t ind = key % _capacity;
+
+    bool remove_tf = _head[ind].remove(key);
+
+    if (remove_tf == true)
+    {
+        _size--;
+        return(true);
+    }
+
+    return(false);
+}
+
+size_t hash_map::get_size() const
+{
+    return(_size);
+}
+
+size_t hash_map::get_capacity() const
+{
+    return(_capacity);
+}
+
+void hash_map::get_all_keys(int *keys)
+{
+    size_t ind = 0;
+    for (size_t i = 0; i < _capacity; i++)
+    {
+        _head[i].reset_iter();
+        while (_head[i].iter_at_end() == false)
+        {
+            std::optional<std::pair<const int*, float*>> value = _head[i].get_iter_value();
+            if (value.has_value())
+            {
+                keys[ind] = *(value->first); // first refers to const int*, second would refer to float*
+                ind++;
+            }
+            _head[i].increment_iter();
+        }
+    }
+}
+
