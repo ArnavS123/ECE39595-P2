@@ -1,6 +1,6 @@
 #include "hash_map.h"
 
-hash_map::hash_map(size_t capacity) : _size(0), _capacity(capacity)
+hash_map::hash_map(size_t capacity, float ulf, float llf) : _size(0), _capacity(capacity)
 {
     _head = new hash_list[capacity];
 }
