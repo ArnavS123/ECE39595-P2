@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "hash_list.h"
+#include "hash_map.hpp"
 
 template <typename K, typename V>
 class hash_map

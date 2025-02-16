@@ -162,4 +162,5 @@ private:
     node<K, V> *iter_ptr;
 };
 
+#include "hash_list.hpp"
 #endif
