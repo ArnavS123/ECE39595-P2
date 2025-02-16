@@ -1,14 +1,16 @@
 #include "hash_list.h"
 
-hash_list::hash_list() : size(0), head(nullptr) {}
+template <typename K, typename V>
+hash_list<K, V>::hash_list() : size(0), head(nullptr) {}
 
 /**-----------------------------------------------------------------------------------
  * START Part 1
  *------------------------------------------------------------------------------------*/
 
-void hash_list::insert(int key, float value)
+template <typename K, typename V>
+void hash_list<K, V>::insert(K key, V value)
 {
-    node* curr = head;
+    node<K, V>* curr = head;
 
     while (curr != nullptr)
     {
@@ -20,16 +22,17 @@ void hash_list::insert(int key, float value)
         curr = curr->next;
     }
 
-    node* new_node = new node{key, value, head}; // next is set to head
+    node<K, V>* new_node = new node<K, V>{key, value, head}; // next is set to head
     head = new_node;
 
     size++;
     return;
 }
 
-std::optional<float> hash_list::get_value(int key) const
+template <typename K, typename V>
+std::optional<V> hash_list<K, V>::get_value(K key) const
 {
-    node* curr = head;
+    node<K, V>* curr = head;
 
     while (curr != nullptr)
     {
@@ -43,10 +46,11 @@ std::optional<float> hash_list::get_value(int key) const
     return(std::nullopt);
 }
 
-bool hash_list::remove(int key)
+template <typename K, typename V>
+bool hash_list<K, V>::remove(K key)
 {
-    node* curr = head;
-    node* prev = nullptr;
+    node<K, V>* curr = head;
+    node<K, V>* prev = nullptr;
 
     while (curr != nullptr)
     {
@@ -71,18 +75,20 @@ bool hash_list::remove(int key)
     return(false);
 }
 
-size_t hash_list::get_size() const
+template <typename K, typename V>
+size_t hash_list<K, V>::get_size() const
 {
     return(size);
 }
 
-hash_list::~hash_list()
+template <typename K, typename V>
+hash_list<K, V>::~hash_list()
 {
-    node* curr = head;
+    node<K, V>* curr = head;
 
     while (curr != nullptr)
     {
-        node* next_curr = curr->next;
+        node<K, V>* next_curr = curr->next;
         delete(curr);
         curr = next_curr;
     }
@@ -99,19 +105,20 @@ hash_list::~hash_list()
  * START Part 2
  *------------------------------------------------------------------------------------*/
 
-hash_list::hash_list(const hash_list &other) : head(nullptr), size(0), iter_ptr(nullptr)
+template <typename K, typename V>
+hash_list<K, V>::hash_list(const hash_list<K, V> &other) : head(nullptr), size(0), iter_ptr(nullptr)
 {
     if (other.head == nullptr)
     {
         return;
     }
 
-    node* curr_original = other.head;
-    node* prev_new = nullptr;
+    node<K, V>* curr_original = other.head;
+    node<K, V>* prev_new = nullptr;
 
     while (curr_original != nullptr)
     {
-        node* new_node = new node{curr_original->key, curr_original->value, nullptr};
+        node<K, V>* new_node = new node<K, V>{curr_original->key, curr_original->value, nullptr};
 
         if (head == nullptr)
         {
@@ -130,7 +137,8 @@ hash_list::hash_list(const hash_list &other) : head(nullptr), size(0), iter_ptr(
     return;
 }
 
-hash_list &hash_list::operator=(const hash_list &other)
+template <typename K, typename V>
+hash_list<K, V> &hash_list<K, V>::operator=(const hash_list<K, V> &other)
 {
     // self assessment
     if (this == &other)
@@ -139,10 +147,10 @@ hash_list &hash_list::operator=(const hash_list &other)
     }
 
     // delete current
-    node* curr = head;
+    node<K, V>* curr = head;
     while (curr != nullptr)
     {
-        node* next_n = curr->next;
+        node<K, V>* next_n = curr->next;
         delete(curr);
         curr = next_n;
     }
@@ -151,12 +159,12 @@ hash_list &hash_list::operator=(const hash_list &other)
     iter_ptr = nullptr;
 
     // copy
-    node* curr_original = other.head;
-    node* prev_new = nullptr;
+    node<K, V>* curr_original = other.head;
+    node<K, V>* prev_new = nullptr;
 
     while (curr_original != nullptr)
     {
-        node* new_node = new node{curr_original->key, curr_original->value, nullptr};
+        node<K, V>* new_node = new node<K, V>{curr_original->key, curr_original->value, nullptr};
 
         if (head == nullptr)
         {
@@ -175,7 +183,8 @@ hash_list &hash_list::operator=(const hash_list &other)
     return(*this);
 }
 
-void hash_list::reset_iter()
+template <typename K, typename V>
+void hash_list<K, V>::reset_iter()
 {
     iter_ptr = head;
 
@@ -187,7 +196,8 @@ void hash_list::reset_iter()
     return;
 }
 
-void hash_list::increment_iter()
+template <typename K, typename V>
+void hash_list<K, V>::increment_iter()
 {
     if (iter_ptr == NULL)
     {
@@ -206,7 +216,8 @@ void hash_list::increment_iter()
     return;
 }
 
-std::optional<std::pair<const int *, float *>> hash_list::get_iter_value()
+template <typename K, typename V>
+std::optional<std::pair<const K *, V *>> hash_list<K, V>::get_iter_value()
 {
     if (iter_ptr == NULL)
     {
@@ -214,11 +225,12 @@ std::optional<std::pair<const int *, float *>> hash_list::get_iter_value()
     }
     else
     {
-        return(std::optional<std::pair<const int *, float *>>({&(iter_ptr->key), &(iter_ptr->value)}));
+        return(std::optional<std::pair<const K *, V *>>({&(iter_ptr->key), &(iter_ptr->value)}));
     }
 }
 
-bool hash_list::iter_at_end()
+template <typename K, typename V>
+bool hash_list<K, V>::iter_at_end()
 {
     if (iter_ptr == NULL)
     {
