@@ -59,7 +59,7 @@ void hash_map<K, V>::insert(K key, V value)
     if (exist_tf == false)
     {
         _size++;
-        if (need_to_rehash())
+        if (need_to_rehash() == true)
         {
             rehash('+');
         }
@@ -96,7 +96,7 @@ bool hash_map<K, V>::remove(K key)
     if (remove_tf == true)
     {
         _size--;
-        if (need_to_rehash())
+        if (need_to_rehash() == true)
         {
             rehash('-');
         }
@@ -128,7 +128,7 @@ void hash_map<K, V>::get_all_keys(K *keys)
         while (_head[i].iter_at_end() == false)
         {
             std::optional<std::pair<const K*, V*>> value = _head[i].get_iter_value();
-            if (value.has_value())
+            if (value.has_value() == true)
             {
                 keys[ind] = *(value->first); // first refers to const K*, second would refer to V*
                 ind++;
@@ -143,7 +143,22 @@ void hash_map<K, V>::get_all_keys(K *keys)
 template <typename K, typename V>
 void hash_map<K, V>::get_all_sorted_keys(K *keys)
 {
-    // no std::sort
+    get_all_keys(keys);
+
+    // Bubble sort
+    for (size_t i = 0; i < _size - 1; i++) // Outer loop
+    {
+        for (size_t j = 0; j < _size - i - 1; j++) // Inner loop
+        {
+            if (keys[j] > keys[j + 1]) // Check adjacent elements
+            {
+                // Swap
+                K temp = keys[j];
+                keys[j] = keys[j + 1];
+                keys[j + 1] = temp;
+            }
+        }
+    }
 
     return;
 }
@@ -170,15 +185,79 @@ hash_map<K, V>::~hash_map()
 template <typename K, typename V>
 bool hash_map<K, V>::need_to_rehash()
 {
-    //
+    float lf = float(_size) / float(_capacity); // load factor
 
-    return(/**/);
+    bool rehash = false;
+
+    if (lf < _lower_load_factor || lf > _upper_load_factor)
+    {
+        rehash = true;
+    }
+
+    return(rehash);
 }
 
 template <typename K, typename V>
 void hash_map<K, V>::rehash(char increase_decrease)
 {
-    // no new capacity
+    size_t ind = 0;
+
+    // Important: we want to know which index position to start at
+    while (_capacities[ind] != _capacity)
+    {
+        ind++;
+    }
+
+    // Moves index to get correct capacity value
+    if (increase_decrease == '+')
+    {
+        if (ind != 2) // Prevent going above 2
+        {
+            ind += 1;
+        }
+    }
+    else
+    {
+        if (ind != 0) // Prevent going below 0
+        {
+            ind -= 1;
+        }
+    }
+    size_t the_capacity = _capacities[ind];
+
+    // New hash list
+    hash_list<K, V>* the_head = new hash_list<K, V>[the_capacity];
+
+    // Retrieve all keys
+    K *keys = new K[_size];
+    get_all_keys(keys);
+
+    // Retrieve values manually (get_all_keys() does not do this)
+    V *values = new V[_size];
+    for (size_t i = 0; i < _size; i++)
+    {
+        std::optional<V> val = get_value(keys[i]);
+        if (val.has_value() == true)
+        {
+            values[i] = *val;
+        }
+    }
+
+    // Resize
+    delete[] _head;
+    _capacity = the_capacity;
+    _head = the_head;
+
+    // Reinsert
+    size_t original_size = _size;
+    for (size_t i = 0; i < original_size; i++)
+    {
+        insert(keys[i], values[i]);
+    }
+
+    // Clean up
+    delete[] keys;
+    delete[] values;
 
     return;
 }
