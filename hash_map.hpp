@@ -203,9 +203,12 @@ void hash_map<K, V>::rehash(char increase_decrease)
     size_t ind = 0;
 
     // Important: we want to know which index position to start at
-    while (_capacities[ind] != _capacity)
-    {
+    while (ind < 3 && _capacities[ind] != _capacity) {
         ind++;
+    }
+    if (ind >= 3)
+    {
+        return;
     }
 
     // Moves index to get correct capacity value
@@ -228,13 +231,15 @@ void hash_map<K, V>::rehash(char increase_decrease)
     // New hash list
     hash_list<K, V>* the_head = new hash_list<K, V>[the_capacity];
 
+    size_t old_size = _size;
+
     // Retrieve all keys
-    K *keys = new K[_size];
+    K *keys = new K[old_size];
     get_all_keys(keys);
 
     // Retrieve values manually (get_all_keys() does not do this)
-    V *values = new V[_size];
-    for (size_t i = 0; i < _size; i++)
+    V *values = new V[old_size];
+    for (size_t i = 0; i < old_size; i++)
     {
         std::optional<V> val = get_value(keys[i]);
         if (val.has_value() == true)
@@ -245,12 +250,12 @@ void hash_map<K, V>::rehash(char increase_decrease)
 
     // Resize
     delete[] _head;
-    _capacity = the_capacity;
     _head = the_head;
+    _capacity = the_capacity;
+    _size = 0;
 
     // Reinsert
-    size_t original_size = _size;
-    for (size_t i = 0; i < original_size; i++)
+    for (size_t i = 0; i < old_size; i++)
     {
         insert(keys[i], values[i]);
     }
