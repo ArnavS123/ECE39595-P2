@@ -1,7 +1,7 @@
 #include "hash_map.h"
 
 template <typename K, typename V>
-hash_map<K, V>::hash_map(size_t capacity, float ulf, float llf) : _size(0), _capacity(capacity), _upper_load_factor(ulf), _lower_load_factor(llf)
+hash_map<K, V>::hash_map(size_t capacity, float upper_load_factor, float lower_load_factor) : _size(0), _capacity(capacity), _upper_load_factor(upper_load_factor), _lower_load_factor(lower_load_factor)
 {
     _head = new hash_list<K, V>[capacity];
 }
@@ -189,7 +189,7 @@ bool hash_map<K, V>::need_to_rehash()
 
     bool rehash = false;
 
-    if (lf < _lower_load_factor || lf > _upper_load_factor)
+    if (lf < _lower_load_factor || lf > _upper_load_factor) // out of bounds
     {
         rehash = true;
     }
@@ -203,7 +203,7 @@ void hash_map<K, V>::rehash(char increase_decrease)
     size_t ind = 0;
 
     // Important: we want to know which index position to start at
-    while (ind < 3 && _capacities[ind] != _capacity)
+    while (ind < 3 && _capacities[ind] <= _capacity)
     {
         ind++;
     }
