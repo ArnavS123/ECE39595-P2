@@ -16,7 +16,7 @@ struct node
     V value;
 
     /** a pointer to the next node */
-    node *next;
+    node<K, V> *next;
 };
 
 /** A list that stores key/value pairs */
