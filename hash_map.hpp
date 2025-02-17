@@ -203,7 +203,8 @@ void hash_map<K, V>::rehash(char increase_decrease)
     size_t ind = 0;
 
     // Important: we want to know which index position to start at
-    while (ind < 3 && _capacities[ind] != _capacity) {
+    while (ind < 3 && _capacities[ind] != _capacity)
+    {
         ind++;
     }
     if (ind >= 3)
