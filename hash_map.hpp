@@ -244,48 +244,27 @@ void hash_map<K, V>::rehash(char increase_decrease)
 
     // What is this initial capacity? (209, 1021, 2039)
     size_t ind;
-    bool less = false;
+    // initial capacity: 200 (rehash) --> 209 not 1021, less = true (209 not 1021)
     if (_capacity <= _capacities[0]) // 209
     {
         ind = 0;
-        if (_capacity < _capacities[0])
-        {
-            less = true;
-        }
     }
-    else if (_capacity < _capacities[1]) // 1021
+    else if (_capacity <= _capacities[1]) // 1021
     {
         ind = 1;
-        if (_capacity < _capacities[1])
-        {
-            less = true;
-        }
     }
     else // 2039
     {
         ind = 2;
-        if (_capacity <= _capacities[2])
-        {
-            less = true;
-        }
     }
 
     if (increase_decrease == 'u')
     {
-        if (less != true)
-        {
-            if (ind != 2)
-            {
-                ind += 1;
-            }
-        }
+        ind += 1;
     }
     else // 'd'
     {
-        if (ind != 0)
-        {
-            ind -= 1;
-        }
+        ind -= 1;
     }
 
     // catch-all (just in case)

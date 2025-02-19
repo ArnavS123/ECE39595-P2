@@ -72,20 +72,21 @@ void test_copy_and_assignment() {
 
 
 int main(int argc, char *argv[]){
-   // std::cout <<"Entering main" << std::endl;
+    std::cout <<"Entering main" << std::endl;
     hash_map<int, float> test_type1 = hash_map<int,float>(500,1.2,0.8);
     test_type1.insert(1,2.0);
-   // std::cout << "New cap should be 209: " << test_type1.get_capacity() << std::endl;
+    std::cout << "New cap should be 209: " << test_type1.get_capacity() << std::endl;
 
     hash_map<float,int> test_type2 = hash_map<float,int>(500,1.2,0.8);
      for(int i = 0; i < 500; i++){
         size_t oldcap = test_type2.get_capacity();
         test_type2.insert(((float)i + 0.1),i);
         size_t newcap = test_type2.get_capacity();
-       // if(oldcap != newcap) {//std::cout <<"old: " << oldcap << " | new: " << newcap << " | "<< (float)test_type2.get_size() / (float)test_type2.get_capacity() << std::endl;}
-       // else{
-        //    std::cout <<"For i = " << i << " no rehash, LF is at :" <<(float)test_type2.get_size() / (float)test_type2.get_capacity() << std::endl;
-       // }
+        if(oldcap != newcap) {
+            std::cout <<"old: " << oldcap << " | new: " << newcap << " | "<< (float)test_type2.get_size() / (float)test_type2.get_capacity() << std::endl;}
+        else{
+            std::cout <<"For i = " << i << " no rehash, LF is at :" <<(float)test_type2.get_size() / (float)test_type2.get_capacity() << std::endl;
+        }
      } //expect an instant rehash, and then some flip flopping
      //now lets make sure we didnt lose any data
 
