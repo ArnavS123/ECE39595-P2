@@ -158,7 +158,7 @@ static size_t _capacities[];
 template <typename K, typename V>
 size_t hash_map<K, V>::_capacities[] = {209, 1021, 2039};
 
-#include "hash_map.cpp"
+#include "hash_map.hpp"
 #endif
 
 // #ifndef HASH_MAP_H

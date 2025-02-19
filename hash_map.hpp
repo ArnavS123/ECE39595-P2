@@ -1,7 +1,7 @@
 #include "hash_map.h"
 
 template <typename K, typename V>
-hash_map<K, V>::hash_map(size_t capacity, float upper_load_factor, float lower_load_factor) : _size(0), _capacity(capacity), _upper_load_factor(upper_load_factor), _lower_load_factor(lower_load_factor)
+hash_map<K, V>::hash_map(size_t capacity, float ulf, float llf) : _size(0), _capacity(capacity), _upper_load_factor(ulf), _lower_load_factor(llf)
 {
     _head = new hash_list<K, V>[capacity];
 }
@@ -185,12 +185,11 @@ hash_map<K, V>::~hash_map()
 template <typename K, typename V>
 bool hash_map<K, V>::need_to_rehash()
 {
-    float upper_lim = float(_upper_load_factor) * float(_capacity);
-    float lower_lim = float(_lower_load_factor) * float(_capacity);
+    float lf = float(_size) / float(_capacity); // load factor
 
     bool rehash = false;
 
-    if (_size > upper_lim || _size < lower_lim) // out of bounds
+    if (lf < _lower_load_factor || lf > _upper_load_factor)
     {
         rehash = true;
     }
@@ -201,32 +200,90 @@ bool hash_map<K, V>::need_to_rehash()
 template <typename K, typename V>
 void hash_map<K, V>::rehash(char increase_decrease)
 {
-    size_t ind = 0;
+    // size_t ind = 0;
 
-    // Important: we want to know which index position to start at
-    while (ind < 3 && _capacities[ind] <= _capacity)
-    {
-        ind++;
-    }
-    if (ind >= 3)
-    {
-        return;
-    }
+    // // Important: we want to know which index position to start at
+    // while (ind < 3 && _capacities[ind] != _capacity)
+    // {
+    //     ind++;
+    // }
+    // if (ind >= 3)
+    // {
+    //     return;
+    // }
 
-    // Moves index to get correct capacity value
-    if (increase_decrease == '+')
+    // // Moves index to get correct capacity value
+    // if (increase_decrease == '+')
+    // {
+    //     if (ind != 2) // Prevent going above 2
+    //     {
+    //         ind += 1;
+    //     }
+    // }
+    // else
+    // {
+    //     if (ind != 0) // Prevent going below 0
+    //     {
+    //         ind -= 1;
+    //     }
+    // }
+    // size_t the_capacity = _capacities[ind];
+
+    // What is this initial capacity? (209, 1021, 2039)
+    size_t ind;
+    bool less = false;
+    if (_capacity <= _capacities[0]) // 209
     {
-        if (ind != 2) // Prevent going above 2
+        ind = 0;
+        if (_capacity < _capacities[0])
         {
-            ind += 1;
+            less = true;
         }
     }
-    else
+    else if (_capacity < _capacities[1]) // 1021
     {
-        if (ind != 0) // Prevent going below 0
+        ind = 1;
+        if (_capacity < _capacities[1])
+        {
+            less = true;
+        }
+    }
+    else // 2039
+    {
+        ind = 2;
+        if (_capacity <= _capacities[2])
+        {
+            less = true;
+        }
+    }
+
+    if (increase_decrease == '+')
+    {
+        if (less != true)
+
+        {
+            if (ind != 2)
+            {
+                ind += 1;
+            }
+        }
+    }
+    else // '-'
+    {
+        if (ind != 0)
         {
             ind -= 1;
         }
+    }
+
+    // catch-all (just in case)
+    if (ind >= 3)
+    {
+        ind = 2;
+    }
+    if (ind <= -1)
+    {
+        ind = 0;
     }
     size_t the_capacity = _capacities[ind];
 
