@@ -262,7 +262,6 @@ void hash_map<K, V>::rehash(char increase_decrease)
     if (increase_decrease == '+')
     {
         if (less != true)
-
         {
             if (ind != 2)
             {
