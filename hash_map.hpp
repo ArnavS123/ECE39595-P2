@@ -59,13 +59,17 @@ void hash_map<K, V>::insert(K key, V value)
     _head[ind].insert(key, value);
 
     //return ;
+    //empty -> size = 1 (0.8 and 1.2) capacity is 2
+    //need to rehash? 1 < 0.8 * capacity = 1.6 -> true
 
     if (exist_tf == false)
     {
         _size++;
-        if (need_to_rehash() == true)
+        char up_down;
+
+        if (need_to_rehash(up_down) == true)
         {
-            rehash('+');
+            rehash(up_down);
         }
     }
 
@@ -100,9 +104,11 @@ bool hash_map<K, V>::remove(K key)
     if (remove_tf == true)
     {
         _size--;
-        if (need_to_rehash() == true)
+        char up_down;
+
+        if (need_to_rehash(up_down) == true)
         {
-            rehash('-');
+            rehash(up_down);
         }
         return(true);
     }
@@ -185,15 +191,20 @@ hash_map<K, V>::~hash_map()
 }
 
 template <typename K, typename V>
-bool hash_map<K, V>::need_to_rehash()
+bool hash_map<K, V>::need_to_rehash(char& up_down)
 {
-    float lf = float(_size) / float(_capacity); // load factor
-
     bool rehash = false;
 
-    if (lf < _lower_load_factor || lf > _upper_load_factor)
+    if (_size > _upper_load_factor * _capacity)
     {
         rehash = true;
+        up_down = ('u');
+    }
+
+    if (_size < _lower_load_factor * _capacity)
+    {
+        rehash = true;
+        up_down = ('d');
     }
 
     return(rehash);
@@ -259,7 +270,7 @@ void hash_map<K, V>::rehash(char increase_decrease)
         }
     }
 
-    if (increase_decrease == '+')
+    if (increase_decrease == 'u')
     {
         if (less != true)
         {
@@ -269,7 +280,7 @@ void hash_map<K, V>::rehash(char increase_decrease)
             }
         }
     }
-    else // '-'
+    else // 'd'
     {
         if (ind != 0)
         {
@@ -286,6 +297,16 @@ void hash_map<K, V>::rehash(char increase_decrease)
     {
         ind = 0;
     }
+
+    //do not reduce
+    if (increase_decrease == 'd' && _capacity < _capacities[ind])
+    {
+        return;
+    }
+    if (increase_decrease == 'u' && _capacity > _capacities[ind]){
+        return;
+    }
+    
     size_t the_capacity = _capacities[ind];
 
     // New hash list

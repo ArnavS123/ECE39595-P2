@@ -126,7 +126,7 @@ void get_bucket_sizes(size_t *buckets);
 */
 ~hash_map();
 
-bool need_to_rehash(); // Helper function (do we need to rehash map)
+bool need_to_rehash(char&); // Helper function (do we need to rehash map)
 void rehash(char increase_decrease); // Helper function (rehash map)
 
 private:
