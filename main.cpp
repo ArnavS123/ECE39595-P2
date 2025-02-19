@@ -74,10 +74,21 @@ void test_copy_and_assignment() {
 int main(int argc, char *argv[]){
    // std::cout <<"Entering main" << std::endl;
     hash_map<int, float> test_type1 = hash_map<int,float>(500,1.2,0.8);
-    test_type1.insert(1,2.0);
+
+    std::cout << " pos -2" << std::endl;
+
+    test_type1.insert(1, 2.0);
+
+    //return 0;
+
+    std::cout << " pos -2.1" << std::endl;
+
    // std::cout << "New cap should be 209: " << test_type1.get_capacity() << std::endl;
 
     hash_map<float,int> test_type2 = hash_map<float,int>(500,1.2,0.8);
+
+    std::cout << " pos -1" << std::endl;
+
      for(int i = 0; i < 500; i++){
         size_t oldcap = test_type2.get_capacity();
         test_type2.insert(((float)i + 0.1),i);
@@ -89,13 +100,16 @@ int main(int argc, char *argv[]){
      } //expect an instant rehash, and then some flip flopping
      //now lets make sure we didnt lose any data
 
+     std::cout << " pos 1" << std::endl;
+
      float* floatarr = new float[500];
      test_type2.get_all_keys(floatarr);
+
      for(int i = 0; i < 500; i++){
         std::optional<float> curval = test_type2.get_value((float)i + 0.1);
         //std::cout <<"key: " << i << " | val: " << curval.value() <<" | ";
     }
-    //std::cout << std::endl;
+    std::cout << "pos 2" << std::endl;
      delete [] floatarr;
      //rehash down seem to work, values were still assigned correctly
      //test get all keys sorted
@@ -113,11 +127,20 @@ int main(int argc, char *argv[]){
      test_3.insert(892371,1);
      test_3.insert(45071,1);
      test_3.insert(3,1);
+
+     std::cout << "pos 2-1" << std::endl;
+
      size_t test3size = test_3.get_size();
      int* unsort_test = new int[test3size];
      int* sort_test = new int[test3size];
+
+     std::cout << "pos 2-2-0" << std::endl;
+
      test_3.get_all_keys(unsort_test);
      test_3.get_all_sorted_keys(sort_test);
+
+     std::cout << "pos 2-2" << std::endl;
+
     for(size_t j = 0; j < test3size; j++){
         //std::cout <<"index: " << j << "| key at index(US): " << unsort_test[j] <<" | key at index(S): " << sort_test[j] << std::endl;
     }
@@ -133,6 +156,9 @@ int main(int argc, char *argv[]){
             break;
         }
     }
+
+    std::cout << "pos 3" << std::endl;
+
     //test hashing based on capacity near 1021 to make sure hashing does not occur in a valid range
         //tested already
     //test remove validity
@@ -149,6 +175,9 @@ int main(int argc, char *argv[]){
         //    std::cout << "Cap changed at :" << o << " elements from " << oldcap << " to " << newcap << std::endl;
         }
     }
+
+    std::cout << "pos 4" << std::endl;
+
     //invalid hashmap test, no elements but cannot segfault or error on any method called on it
     hash_map<int,int> invalid = hash_map<int,int>(1,2,0.5);
         // get all bucket sizes, get all keys, get all keys sorted, remove, 
@@ -158,15 +187,25 @@ int main(int argc, char *argv[]){
         }
         int* bingus3 = new int[1];
 
+        std::cout << "pos 5- -1" << std::endl;
+
         invalid.get_all_keys(bingus3);
+
+        std::cout << "pos 5- -1 a" << std::endl;
     //    std::cout <<"Test: get all keys empty hashmap:" << bingus3[0] << std::endl;
         invalid.get_all_sorted_keys(bingus3);
+
+        std::cout << "pos 5- -1 - 0" << std::endl;
+
        // std::cout <<"Test: get all sorted keys empty hashmap:" << bingus3[0] << std::endl;
         size_t* BScheck = new size_t[1];
         invalid.get_bucket_sizes(BScheck);
       //  std::cout <<"Test: get bucket sizes empty" << BScheck[0] << std::endl;        
         delete [] bingus3;
         delete [] BScheck;
+
+        std::cout << "pos 5-0" << std::endl;
+
 
     //verify get bucket sizes, complete on a large array, delete most values, attempt again
     //hash_map<int,int> test6 = hash_map<int,int>(2,1.2,0.8);
@@ -191,6 +230,7 @@ int main(int argc, char *argv[]){
     //std::cout <<"Capacity is" << test7.get_capacity() << std::endl;
    // std::cout <<"Load factor:" <<(float)test7.get_size() / (float)test7.get_capacity()<< std::endl;
 
+   std::cout << "pos 5" << std::endl;
 
     //test copy/assign 
     //hash_map<int,int> test8 = test7;

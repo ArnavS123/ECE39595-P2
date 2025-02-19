@@ -53,8 +53,12 @@ void hash_map<K, V>::insert(K key, V value)
     // }
     size_t ind = _hash(key) % _capacity; // altered hash function (PART 2 CHANGE)
 
+    //std::cout << "hash value = " << ind << std::endl;
+
     bool exist_tf = _head[ind].get_value(key).has_value();
     _head[ind].insert(key, value);
+
+    //return ;
 
     if (exist_tf == false)
     {
@@ -146,21 +150,19 @@ void hash_map<K, V>::get_all_sorted_keys(K *keys)
     get_all_keys(keys);
 
     // Bubble sort
-    for (size_t i = 0; i < _size - 1; i++) // Outer loop
+    for (int i = 0; i < _size - 1; i++) // Outer loop
     {
-        for (size_t j = 0; j < _size - i - 1; j++) // Inner loop
+        for (int j = i + 1; j < _size ; j++) // Inner loop
         {
-            if (keys[j] > keys[j + 1]) // Check adjacent elements
+            if (keys[i] > keys[j]) // Check adjacent elements
             {
                 // Swap
-                K temp = keys[j];
-                keys[j] = keys[j + 1];
-                keys[j + 1] = temp;
+                K temp = keys[i];
+                keys[i] = keys[j];
+                keys[j] = temp;
             }
         }
     }
-
-    return;
 }
 
 template <typename K, typename V>
@@ -316,7 +318,18 @@ void hash_map<K, V>::rehash(char increase_decrease)
     // Reinsert
     for (size_t i = 0; i < old_size; i++)
     {
-        insert(keys[i], values[i]);
+        //insert(keys[i], values[i]);
+        size_t ind = _hash(keys[i]) % _capacity; // altered hash function (PART 2 CHANGE)
+
+        //std::cout << "(2) hash value = " << ind << std::endl;
+
+        //bool exist_tf = _head[ind].get_value(keys[i]).has_value();
+        _head[ind].insert(keys[i], values[i]);
+
+        //if (exist_tf == false)
+        {
+            _size++;
+        }
     }
 
     // Clean up
